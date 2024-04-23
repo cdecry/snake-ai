@@ -22,8 +22,8 @@
 ### Action
 (Relative to current direction)
 - Go straight `[1,0,0]`
-- Turn left `[0,1,0]`
-- Turn right `[0,0,1]`
+- Turn right `[0,1,0]`
+- Turn left `[0,0,1]`
 
 ### Rewards
 - Eat an apple `+10`
@@ -32,13 +32,13 @@
 ### States
 Information the model needs to know:
 - `danger_straight` snake will hit edge if it goes straight
-- `danger_left` snake will hit edge if it goes left
 - `danger_right` snake will hit edge if it goes right
-- `direction_left` snake is moving left
+- `danger_left` snake will hit edge if it goes left
 - `direction_right` snake is moving right
+- `direction_left` snake is moving left
 - `direction_up` snake is moving up
 - `direction_down` snake is moving down
-- `food_left` food is to the left of snake
 - `food_right` food is to the right of snake
+- `food_left` food is to the left of snake
 - `food_up` food is above the snake
 - `food_down` food is below the snake

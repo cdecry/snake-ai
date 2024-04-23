@@ -2,6 +2,7 @@ import pygame
 from enum import Enum
 from collections import namedtuple
 import random
+import numpy as np
 
 pygame.init()
 font = pygame.font.SysFont('arial', 25)
@@ -89,10 +90,12 @@ class SnakeGameAI:
 
         return reward, game_over, self.score
     
-    def is_collision(self):
-        if self.head.x > self.w - BLOCK_SIZE or self.head.x < 0 or self.head.y > self.h - BLOCK_SIZE or self.head.y < 0:
+    def is_collision(self, pt=None):
+        if pt == None:
+            pt = self.head
+        if pt.x > self.w - BLOCK_SIZE or pt.x < 0 or pt.y > self.h - BLOCK_SIZE or pt.y < 0:
             return True
-        if self.head in self.snake[1:]:
+        if pt in self.snake[1:]:
             return True
         
         return False
@@ -104,7 +107,6 @@ class SnakeGameAI:
         [pygame.draw.rect(background, color, rect) for rect, color in tiles]
         
         self.display.blit(background, (0, 0))
-
 
         for i in range(len(self.snake)):
             pt = self.snake[i]
@@ -150,26 +152,27 @@ class SnakeGameAI:
         pygame.display.flip()
         
     def move(self, action):
+        cw_dir = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]
+        idx = cw_dir.index(self.direction)
+
+        if action == [1,0,0]:
+            new_dir = cw_dir[idx]
+        elif action == [0,1,0]:
+            new_dir = cw_dir[(idx + 1) % 4]
+        else:
+            new_dir = cw_dir[(idx - 1) % 4]
+
+        self.direction = new_dir
+
         x = self.head.x
         y = self.head.y
-        if action == Direction.RIGHT:
+        if self.direction == Direction.RIGHT:
             x += BLOCK_SIZE
-        elif action == Direction.LEFT:
+        elif self.direction == Direction.LEFT:
             x -= BLOCK_SIZE
-        elif action == Direction.DOWN:
+        elif self.direction == Direction.DOWN:
             y += BLOCK_SIZE
-        elif action == Direction.UP:
+        elif self.direction == Direction.UP:
             y -= BLOCK_SIZE
             
         self.head = Point(x, y)
-
-if __name__ == '__main__':
-    game = SnakeGameAI()
-    while True:
-        game_over, score = game.play_step()
-        
-        if game_over == True:
-            break
-        
-    print('Final Score', score)
-    pygame.quit()

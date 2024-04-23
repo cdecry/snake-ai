@@ -20,6 +20,7 @@ BLUE1 = (65,111,228)
 BLUE2 = (77,124,246)
 GREEN1 = (170,215,80)
 GREEN2 = (162,209,72)
+WHITE = (255,255,255)
 BLACK = (0,0,0)
 
 BLOCK_SIZE = 20
@@ -104,10 +105,33 @@ class SnakeGame:
 
         for i in range(len(self.snake)):
             pt = self.snake[i]
-            center = (pt.x + BLOCK_SIZE // 2, pt.y + BLOCK_SIZE // 2)
+            x_pt = pt.x + BLOCK_SIZE // 2
+            y_pt = pt.y + BLOCK_SIZE // 2
+            center = (x_pt, y_pt)
             if i == 0:
                 pygame.draw.circle(self.display, BLUE1, center, BLOCK_SIZE // 2 + 2)
                 pygame.draw.circle(self.display, BLUE2, center, BLOCK_SIZE // 2 - 2)
+
+                E_DIST = 8
+                eyes_center = [(x_pt - E_DIST, y_pt), (x_pt + E_DIST, y_pt)]
+                pupils_center = [(x_pt - E_DIST, y_pt + 2), (x_pt + E_DIST, y_pt + 2)]
+
+                if self.direction == Direction.LEFT or self.direction == Direction.RIGHT:
+                    eyes_center = [(x_pt, y_pt - E_DIST), (x_pt, y_pt + E_DIST)]
+                
+                if self.direction == Direction.UP:
+                    pupils_center = [(x_pt - E_DIST, y_pt - 2), (x_pt + E_DIST, y_pt - 2)]
+                elif self.direction == Direction.LEFT:
+                    pupils_center = [(x_pt - 2, y_pt - E_DIST), (x_pt - 2, y_pt + E_DIST)]
+                elif self.direction == Direction.RIGHT:
+                    pupils_center = [(x_pt + 2, y_pt - E_DIST), (x_pt + 2, y_pt + E_DIST)]
+                
+                pygame.draw.circle(self.display, BLUE1, eyes_center[0], 7)
+                pygame.draw.circle(self.display, BLUE1, eyes_center[1], 7)
+                pygame.draw.circle(self.display, WHITE, eyes_center[0], 4)
+                pygame.draw.circle(self.display, WHITE, eyes_center[1], 4)
+                pygame.draw.circle(self.display, BLACK, pupils_center[0], 2)
+                pygame.draw.circle(self.display, BLACK, pupils_center[1], 2)
             else:
                 pygame.draw.circle(self.display, BLUE1, center, BLOCK_SIZE // 2)
                 pygame.draw.circle(self.display, BLUE2, center, BLOCK_SIZE // 2 - 4)

@@ -27,7 +27,7 @@ WHITE = (255,255,255)
 BLACK = (0,0,0)
 
 BLOCK_SIZE = 20
-SPEED = 20
+SPEED = 40
 E_DIST = 8
 
 class SnakeGameAI:

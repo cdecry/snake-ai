@@ -2,7 +2,7 @@ import torch
 import random
 import numpy as np
 from collections import deque
-from game import SnakeGameAI, Direction, Point
+from game import SnakeGameAI, Direction, Point, BLOCK_SIZE
 
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
@@ -16,7 +16,47 @@ class Agent:
         self.memory = deque(maxlen=MAX_MEMORY)
         
     def get_state(self, game):
-        pass
+        head = game.snake[0]
+        point_l = Point(head.x - BLOCK_SIZE, head.y)
+        point_r = Point(head.x + BLOCK_SIZE, head.y)
+        point_u = Point(head.x, head.y - BLOCK_SIZE)
+        point_d = Point(head.x, head.y + BLOCK_SIZE)
+
+        dir_l = game.direction == Direction.LEFT
+        dir_r = game.direction == Direction.RIGHT
+        dir_u = game.direction == Direction.UP
+        dir_d = game.direction == Direction.DOWN
+
+        danger_straight = ((dir_l and game.is_collision(point_l)) or
+                           (dir_r and game.is_collision(point_r)) or
+                           (dir_u and game.is_collision(point_u)) or
+                           (dir_d and game.is_collision(point_d)))
+        danger_right = ((dir_l and game.is_collision(point_u)) or
+                       (dir_r and game.is_collision(point_d)) or
+                       (dir_u and game.is_collision(point_r)) or
+                       (dir_d and game.is_collision(point_l)))
+        danger_left = ((dir_l and game.is_collision(point_d)) or
+                       (dir_r and game.is_collision(point_u)) or
+                       (dir_u and game.is_collision(point_l)) or
+                       (dir_d and game.is_collision(point_r)))
+
+        state = [
+            danger_straight, # Danger straight
+            danger_right, # Danger right
+            danger_left, # Danger left
+
+            dir_l, # Direction left
+            dir_r, # Direction right
+            dir_u, # Direction up
+            dir_d, # Direction down
+
+            game.apple.x < game.head.x, # Food left
+            game.apple.x > game.head.x, # Food right
+            game.apple.y < game.head.y, # Food up
+            game.apple.y > game.head.y # Food down
+        ]
+        
+        return np.array(state, dtype=int)
 
     def remember(self, action, reward, next_state, game_over):
         pass

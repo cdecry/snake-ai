@@ -16,15 +16,18 @@ Point = namedtuple('Point', 'x, y')
 
 WHITE = (255, 255, 255)
 RED = (231,71,29)
+LIGHT_RED = (238,117,92)
 BLUE1 = (65,111,228)
 BLUE2 = (77,124,246)
 GREEN1 = (170,215,80)
 GREEN2 = (162,209,72)
+GREEN3 = (84,140,116)
 WHITE = (255,255,255)
 BLACK = (0,0,0)
 
 BLOCK_SIZE = 20
 SPEED = 10
+E_DIST = 8
 
 class SnakeGame:
     def __init__(self, w=640, h=480):
@@ -42,15 +45,15 @@ class SnakeGame:
                       Point(self.head.x - (2 * BLOCK_SIZE), self.head.y)]
         self.score = 0
         self.food = None
-        self.add_food()
+        self.add_apple()
 
-    def add_food(self):
+    def add_apple(self):
         x = random.randint(0, (self.w - BLOCK_SIZE ) // BLOCK_SIZE) * BLOCK_SIZE 
         y = random.randint(0, (self.h - BLOCK_SIZE ) // BLOCK_SIZE) * BLOCK_SIZE
         self.food = Point(x, y)
 
         if self.food in self.snake:
-            self.add_food()
+            self.add_apple()
 
     def play_step(self):
         for event in pygame.event.get():
@@ -77,7 +80,7 @@ class SnakeGame:
             
         if self.head == self.food:
             self.score += 1
-            self.add_food()
+            self.add_apple()
         else:
             self.snake.pop()
         
@@ -112,18 +115,16 @@ class SnakeGame:
                 pygame.draw.circle(self.display, BLUE1, center, BLOCK_SIZE // 2 + 2)
                 pygame.draw.circle(self.display, BLUE2, center, BLOCK_SIZE // 2 - 2)
 
-                E_DIST = 8
                 eyes_center = [(x_pt - E_DIST, y_pt), (x_pt + E_DIST, y_pt)]
                 pupils_center = [(x_pt - E_DIST, y_pt + 2), (x_pt + E_DIST, y_pt + 2)]
-
-                if self.direction == Direction.LEFT or self.direction == Direction.RIGHT:
-                    eyes_center = [(x_pt, y_pt - E_DIST), (x_pt, y_pt + E_DIST)]
                 
                 if self.direction == Direction.UP:
                     pupils_center = [(x_pt - E_DIST, y_pt - 2), (x_pt + E_DIST, y_pt - 2)]
                 elif self.direction == Direction.LEFT:
+                    eyes_center = [(x_pt, y_pt - E_DIST), (x_pt, y_pt + E_DIST)]
                     pupils_center = [(x_pt - 2, y_pt - E_DIST), (x_pt - 2, y_pt + E_DIST)]
                 elif self.direction == Direction.RIGHT:
+                    eyes_center = [(x_pt, y_pt - E_DIST), (x_pt, y_pt + E_DIST)]
                     pupils_center = [(x_pt + 2, y_pt - E_DIST), (x_pt + 2, y_pt + E_DIST)]
                 
                 pygame.draw.circle(self.display, BLUE1, eyes_center[0], 7)
@@ -136,7 +137,13 @@ class SnakeGame:
                 pygame.draw.circle(self.display, BLUE1, center, BLOCK_SIZE // 2)
                 pygame.draw.circle(self.display, BLUE2, center, BLOCK_SIZE // 2 - 4)
             
-        pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
+        center = (self.food.x + BLOCK_SIZE // 2, self.food.y + BLOCK_SIZE // 2)
+        h_center = (self.food.x + BLOCK_SIZE // 2 - 4, self.food.y + BLOCK_SIZE // 2 - 5)
+        l_center = (self.food.x + BLOCK_SIZE // 2, self.food.y + BLOCK_SIZE // 2 - 12)
+        # pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
+        pygame.draw.circle(self.display, RED, center, BLOCK_SIZE // 2 + 2)
+        pygame.draw.circle(self.display, LIGHT_RED, h_center, 4)
+        pygame.draw.circle(self.display, GREEN3, l_center, 4)
         
         text = font.render("Score: " + str(self.score), True, WHITE)
         self.display.blit(text, [0, 0])

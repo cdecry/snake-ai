@@ -101,10 +101,16 @@ class SnakeGame:
         
         self.display.blit(background, (0, 0))
 
-        for pt in self.snake:
+
+        for i in range(len(self.snake)):
+            pt = self.snake[i]
             center = (pt.x + BLOCK_SIZE // 2, pt.y + BLOCK_SIZE // 2)
-            pygame.draw.circle(self.display, BLUE1, center, BLOCK_SIZE // 2)
-            pygame.draw.circle(self.display, BLUE2, center, (BLOCK_SIZE // 2) - 2)
+            if i == 0:
+                pygame.draw.circle(self.display, BLUE1, center, BLOCK_SIZE // 2 + 2)
+                pygame.draw.circle(self.display, BLUE2, center, BLOCK_SIZE // 2 - 2)
+            else:
+                pygame.draw.circle(self.display, BLUE1, center, BLOCK_SIZE // 2)
+                pygame.draw.circle(self.display, BLUE2, center, BLOCK_SIZE // 2 - 4)
             
         pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
         

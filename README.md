@@ -1,5 +1,5 @@
 # snake-ai
-
+https://github.com/cdecry/snake-ai/assets/35664551/d2e20f91-d89c-4556-aac5-88df0e572c58
 ## Model
 ### Feedforward Neural Network (FNN)
 - input layer => hidden layer => output layer
@@ -10,6 +10,7 @@
 - initialize Q value (init model)
 #### Training loop:
 1. choose action (mode.predict(state) or random)
+
 2. perform action
 3. measure reward
 4. update Q value & train model

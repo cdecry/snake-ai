@@ -27,7 +27,7 @@ WHITE = (255,255,255)
 BLACK = (0,0,0)
 
 BLOCK_SIZE = 20
-SPEED = 40
+SPEED = 120
 E_DIST = 8
 
 class SnakeGameAI:
@@ -35,6 +35,7 @@ class SnakeGameAI:
         self.w = w
         self.h = h
 
+        self.recent = []
         self.reset()
         
     def reset(self):
@@ -51,6 +52,7 @@ class SnakeGameAI:
         self.apple = None
         self.add_apple()
         self.frame_iteration = 0
+        self.recent = []
 
     def add_apple(self):
         x = random.randint(0, (self.w - BLOCK_SIZE ) // BLOCK_SIZE) * BLOCK_SIZE 
@@ -62,6 +64,7 @@ class SnakeGameAI:
 
     def play_step(self, action):
         self.frame_iteration += 1
+        self.recent.append(Point(self.head.x, self.head.y))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -70,10 +73,13 @@ class SnakeGameAI:
 
         self.move(action)
         self.snake.insert(0, self.head)
-        
+
         reward = 0
         game_over = False
-        if self.is_collision() or self.frame_iteration > 100 * len(self.snake):
+
+        if (self.is_collision() or 
+            self.frame_iteration > 100 * len(self.snake) or
+            self.recent.count(Point(self.head.x, self.head.y)) > 10):
             game_over = True
             reward = -10
             return reward, game_over, self.score

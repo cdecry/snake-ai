@@ -54,7 +54,7 @@ class QTrainer:
             if not game_over:
                 Q_new = reward[i] + self.gamma * torch.max(self.model(next_state[i]))
         
-            target[i][torch.argmax(action).item()] = Q_new
+            target[i][torch.argmax(action[i]).item()] = Q_new
         
         self.optimizer.zero_grad()
         loss = self.criterion(target, pred)

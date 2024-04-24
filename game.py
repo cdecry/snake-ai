@@ -79,7 +79,7 @@ class SnakeGameAI:
 
         if (self.is_collision() or 
             self.frame_iteration > 100 * len(self.snake) or
-            self.recent.count(Point(self.head.x, self.head.y)) > 10):
+            self.recent.count(Point(self.head.x, self.head.y)) > 6):
             game_over = True
             reward = -10
             return reward, game_over, self.score
@@ -88,6 +88,7 @@ class SnakeGameAI:
             self.score += 1
             reward = 10
             self.add_apple()
+            self.recent = []
         else:
             self.snake.pop()
         
